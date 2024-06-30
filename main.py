@@ -1,16 +1,35 @@
-# This is a sample Python script.
+#!/usr/bin/env python3
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from picam import PiCam
+from wsgi import WSGIApp
+from wsgiref.simple_server import make_server
+from sys import argv
+
+try:
+    port = int(argv[1])
+except:
+    port = 8000
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+
+''' set up camera info '''
+
+print('Getting camera info')
+info = PiCam()()
+print(f'Camera info is : {info}')
+
+print('Starting server')
+app = WSGIApp(info)
+
+httpd = make_server('', port, app)
+print(f'Serving on port {port}')
+try:
+    httpd.serve_forever()
+except KeyboardInterrupt:
+    print('Interrupt')
+    httpd.server_close()
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+
