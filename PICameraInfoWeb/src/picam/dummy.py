@@ -9,16 +9,18 @@ class DummyFormat:
 
 class PiCamDummy:
 
+    KIND = 'DUMMY'
+
     def __init__(self):
         self.cams=['dummy']
     
     def __camera(self,index):
-        mode = { 
+        modes = [{
             'format' : DummyFormat('dummyformat'),
             'size' : [1920,1680],
             'fps'  : 50
-        }
-        return [PiCamInfo(0,'dummyCamera',mode)]
+        }]
+        return [PiCamInfo(0,'dummyCamera',modes)]
     
     def __call__(self):
         n = len(self.cams)

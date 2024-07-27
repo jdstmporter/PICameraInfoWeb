@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="af785bf2-3f92-4cc5-a29e-b71e85bfb173" name="rpi02w.local">
+        <fileTransfer rootFolder="/home/julianporter/camera" accessType="SFTP" host="rpi02w.local" port="22" sshConfigId="4cf88dcf-a5ca-41c0-968d-8c2feaf54901" sshConfig="julianporter@rpi02w.local:22 key" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

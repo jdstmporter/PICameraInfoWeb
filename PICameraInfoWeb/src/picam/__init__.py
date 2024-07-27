@@ -1,8 +1,7 @@
 from .caminfo import PiCamInfo
+from .exists import isAvailable
 
-
-from sys import modules
-if 'PiCamera2' in modules.keys():
+if isAvailable('picamera2'):
     from .real import PiCamReal as PiCam
 else:
     from .dummy import PiCamDummy as PiCam
