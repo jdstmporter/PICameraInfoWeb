@@ -1,4 +1,3 @@
-from .caminfo import PiCamInfo
 from .exists import isAvailable
 
 if isAvailable('picamera2'):

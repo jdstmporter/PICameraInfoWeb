@@ -2,7 +2,7 @@ import json
 
 class PiCamModeInfo:
 
-    def __init__(self,mode):
+    def __init__(self, mode):
         self.format = mode['format'].format
         sz = mode['size']
         self.width = sz[0]
@@ -25,7 +25,7 @@ class PiCamInfo:
     def __init__(self, index, model, modes):
         self.index = index
         self.model = model
-        self.modes = [PiCamModeInfo(m) for m in modes]
+        self.modes = [PiCamModeInfo(mode=m) for m in modes]
 
     def dict(self):
         return dict(
