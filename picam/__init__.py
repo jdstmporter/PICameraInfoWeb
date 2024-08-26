@@ -1,1 +1,1 @@
-from .cam import PiCam, PiCamInfo
+from .cam import PiCam
