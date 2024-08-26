@@ -1,44 +1,50 @@
 import MySQLdb
 from .info import PiCamInfo
 
+def modeMap(mode):
+    return f"({mode.index}, '{mode.format}', {mode.width}, {mode.height}, {mode.fps})"
 
 class MysqlStore:
 
     def __init__(self,database='picam',host='127.0.0.1',user='sql',password='sql'):
         self.db = MySQLdb.connect(database=database,host=host,user=user,password=password)
+        self.cursor = self.db.cursor()
 
-
+    def close(self):
+        self.cursor.close()
 
     @property
     def cameras(self):
-        with self.db.cursor() as cursor:
-            cursor.execute('select model FROM cameras ORDER BY idx')
-            items = cursor.fetchall()
-            return [item[0] for item in items]
 
-    @cameras.setter
-    def cameras(self,cams):
-        entries = [(idx, cams[idx]) for idx in range(len(cams))]
-        with self.db.cursor() as cursor:
-            cursor.execute('DELETE FROM cameras')
-            cursor.executemany("INSERT INTO cameras (idx, model) VALUES (%s, %s)", entries)
+        self.cursor.execute('select model FROM cameras ORDER BY idx')
+        items = self.cursor.fetchall()
+        return [item[0] for item in items]
+
+
+    def setCameras(self,cams):
+        vals = ", ".join([f"({idx}, '{cams[idx]}')" for idx in range(len(cams))])
+
+        sql = f"INSERT INTO picam.cameras (idx, model) values {vals}"
+        print(sql)
+        self.cursor.execute('delete from cameras where idx>=0')
+        self.cursor.execute(sql)
 
 
 
     @property
     def modes(self):
-        with self.db.cursor() as cursor:
-            cursor.execute('select camera, model, format, width, height, fps from modes join cameras on camera=idx')
-            raw = cursor.fetchall()
-            items = [PiCamInfo.fromTuple(row) for row in raw]
-            return items
+        self.cursor.execute('select camera, model, format, width, height, fps from modes join cameras on camera=idx')
+        raw = self.cursor.fetchall()
+        items = [PiCamInfo.fromTuple(row) for row in raw]
+        return items
 
-    @modes.setter
-    def modes(self,modes):
-        entries = [mode.tuple() for mode in modes]
-        with self.db.cursor() as cursor:
-            cursor.execute('DELETE FROM modes')
-            cursor.executemany("INSERT INTO modes (camera, format, width, height, fps) VALUES (%s, %s, %s, %s, %s)", entries)
+
+    def setModes(self,modes):
+        vals = ", ".join([modeMap(mode) for mode  in modes])
+        sql = f"INSERT INTO picam.modes (camera, format, width, height, fps) values {vals}"
+        print(sql)
+        self.cursor.execute('delete from modes where camera>=0')
+        self.cursor.execute(sql)
 
 
 
