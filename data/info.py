@@ -21,6 +21,8 @@ class PiCamInfo:
         mode = PiCamMode(format=fmt, size=sz, fps=fps)
         return PiCamInfo(index, model, mode)
 
+    def __str__(self):
+        return f'index: {self.index} [{self.model}], format: {self.format}, size: ({self.width}x{self.height}), fps: {self.fps} '
 
     def dict(self):
         return dict(

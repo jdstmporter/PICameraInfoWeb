@@ -1,5 +1,5 @@
 from picamera2 import Picamera2
-from data import PiCamInfo, PiCamMode..s
+from data import PiCamInfo, PiCamMode
 
 
 
@@ -24,6 +24,16 @@ class PiCam:
     @property
     def cameras(self):
         return self.cams
+
+    @property
+    def modes(self):
+        n = len(self.cams)
+        out=[]
+        for index in range(0,n):
+            out.extend(self.__camera(index))
+        return out
+
+
 
 
 

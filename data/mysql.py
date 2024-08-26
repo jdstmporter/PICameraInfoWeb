@@ -37,7 +37,7 @@ class MysqlStore:
     def modes(self,modes):
         entries = [mode.tuple() for mode in modes]
         with self.db.cursor() as cursor:
-            cursor.execute('DELETE FROM cameras')
+            cursor.execute('DELETE FROM modes')
             cursor.executemany("INSERT INTO modes (camera, format, width, height, fps) VALUES (%s, %s, %s, %s, %s)", entries)
 
 
