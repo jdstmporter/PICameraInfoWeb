@@ -46,6 +46,23 @@ class MysqlStore:
         self.cursor.execute('delete from modes where camera>=0')
         self.cursor.execute(sql)
 
+    @property
+    def battery(self):
+        self.cursor.execute('SELECT timestamp, voltage, current, percentage FROM battery ORDER BY timestamp')
+        return self.cursor.fetchall()
+
+    @property
+    def batteryNow(self):
+        self.cursor.execute('select timestamp, percentage from battery where timestamp = (SELECT max(timestamp) FROM battery) LIMIT 1')
+        return self.cursor.fetchone()
+
+    def appendBattery(self,voltage, current, percentage):
+
+        sql = f"INSERT INTO picam.battery (voltage, current, percentage) values ({voltage}, {current}, {percentage})"
+        print(sql)
+        self.cursor.execute('DELETE FROM battery WHERE timestamp < TIMESTAMPADD(DAY, -7, CURRENT_TIMESTAMP)')
+        self.cursor.execute(sql)
+
 
 
 
