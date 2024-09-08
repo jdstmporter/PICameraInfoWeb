@@ -1,28 +1,17 @@
 
-from data import MysqlStore
-from .base import display, getInformation
-
-def dumpDB():
-    try:
-        mysql = MysqlStore()
-        display(mysql.cameras ,mysql.modes)
-        mysql.close()
-    except Exception as e:
-        print(f'Error : {e}')
+from data import DataStore
+from .cameras import Cameras
 
 
-def initialiseDB():
-    try:
-        print('Initialising camera info database')
-        print('Getting camera info')
-        cameras, modes = getInformation()
-        display(cameras, modes)
+class SQL:
+
+    def __init__(self):
+        self.sql = DataStore()
+
+    def __del__(self):
+        self.sql.close()
 
 
-        print('Loading database')
-        mysql = MysqlStore()
-        mysql.setCameras(cameras)
-        mysql.setModes(modes)
-        mysql.close()
-    except Exception as e:
-        print(f'Error: {e}')
+
+    def battery(self):
+        return self.sql.batteryJSON()

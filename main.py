@@ -1,50 +1,66 @@
 #!/usr/bin/env python3
-from actions import listCameras, dumpDB, initialiseDB, readBattery, runCameraServer
+from actions import BatteryDaemon, Cameras, SQL, CameraServer
 import argparse
 
-
-
+from actions.power import Battery
 
 parser = argparse.ArgumentParser(
     prog='PiCamInfo',
     description='PiCam information web app'
 )
 
-groupU=parser.add_argument_group('utilities')
-groupU.add_argument('-w','--write', action='store_true', dest='write',help='Initialise camera information DB')
-groupU.add_argument('-r','--read', action='store_true', dest='read',help='dump camera information DB')
-groupU.add_argument('-c','--cameras', action='store_true', dest='cameras',help='List available cameras and modes')
-groupU.add_argument('-b','--battery',action='store_true',dest='battery',help='Print battery status')
+subs = parser.add_subparsers(title='Modes of operation')
+parserC = subs.add_parser('camera',description='Camera actions',help='camera mode help')
+parserC.add_argument('action', action='store', dest='action', type=str, choices=['raw','load','store'])
+parserC.set_defaults(actor='camera')
 
-groupS=parser.add_argument_group('services')
-groupS.add_argument('-d','--daemon',action='store_true',dest='daemon',help='Start battery daemon')
-groupS.add_argument('-s','--server',action='store_true',dest='webserver',help='Start web server')
-groupS.add_argument('-i', '--ip', action='store', default='0.0.0.0', dest='ip', nargs='?',help='IP for web server')
-groupS.add_argument('-p', '--port', action='store', default=8080, dest='port', type=int, nargs='?',help='Port for web server')
+parserB = subs.add_parser('battery',description='Battery actions',help='battery mode help')
+parserB.add_argument('action', action='store', dest='action', type=str, choices=['raw','load','store'])
+parserB.set_defaults(actor='battery')
+
+parserD = subs.add_parser('daemon',description='Run battery daemon')
+parserD.set_defaults(actor='daemon')
+
+parserS = subs.add_parser('service',description='Start web service')
+parserS.add_argument('-i', '--ip', action='store', default='0.0.0.0', dest='ip', nargs='?',help='IP for web server')
+parserS.add_argument('-p', '--port', action='store', default=8080, dest='port', type=int, nargs='?',help='Port for web server')
+parserS.set_defaults(actor='service')
 
 namespace = parser.parse_args()
+actor = namespace.actor
 
+if actor=='camera':
+    action=namespace.action
+    c = Cameras()
+    if action=='raw':
+        c.list()
+    elif action=='load':
+        c.read()
+    elif action=='store':
+        c.write()
+    else:
+        parser.print_help()
 
+elif actor=='battery':
+    action = namespace.action
+    b = Battery()
+    if action == 'raw':
+        b.list()
+    elif action == 'load':
+        b.read()
+    elif action == 'store':
+        b.write()
+    else:
+        parser.print_help()
 
-''' set up camera info '''
-if namespace.cameras:
-    listCameras()
-
-elif namespace.read:
-    dumpDB()
-elif namespace.write:
-    initialiseDB()
-
-elif namespace.battery:
-    readBattery()
-
-elif namespace.daemon:
+elif actor=='daemon':
     print('Starting battery daemon')
-    # runBatteryDaemon()
-    pass
+    batteryDaemon = BatteryDaemon()
+    batteryDaemon.start()
 
-elif namespace.webserver:
-    runCameraServer(namespace.ip,namespace.port)
+elif actor=='service':
+    c=CameraServer(namespace.ip,namespace.port)
+    c.start()
 
 else:
     parser.print_help()

@@ -1,2 +1,2 @@
 from .info import PiCamInfo, PiCamMode
-from .mysql import MysqlStore
+from .datastore import DataStore
