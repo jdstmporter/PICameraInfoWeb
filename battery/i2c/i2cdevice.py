@@ -12,8 +12,9 @@ class I2CDevice:
     def __del__(self):
         try:
             self.i2c.close()
-        except:
-            pass
+        except Exception as e:
+            print (f'Error closing i2c: {e}')
+
 
     @classmethod
     def _int2bytes(cls,value,n=4):
@@ -22,7 +23,9 @@ class I2CDevice:
         return values
 
     @ classmethod
-    def _bytes2int(cls,data=[]):
+    def _bytes2int(cls,data=None):
+        if data is None:
+            data=[]
         data.reverse()
         return reduce(operator.or_,[data[b]<<(8*b) for b in range(len(data))])
 

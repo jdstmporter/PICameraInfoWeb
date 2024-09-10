@@ -4,9 +4,6 @@ import json
 from .info import PiCamInfo
 from .mysql import MysqlStore
 
-def modeMap(mode):
-    return f"({mode.index}, '{mode.format}', {mode.width}, {mode.height}, {mode.fps})"
-
 
 class DataMode(Enum):
     Battery = 1
@@ -79,7 +76,7 @@ class DataStore:
 
     @modes.setter
     def modes(self,modes):
-        vals = ", ".join([modeMap(mode) for mode in modes])
+        vals = ", ".join([mode.sql() for mode in modes])
         self.db.write(DataMode.Modes,vals)
 
     def json(self):

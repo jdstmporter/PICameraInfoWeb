@@ -22,10 +22,10 @@ class UPSInfo:
 
 class UPSDevice:
 
-    def __init__(self,bus = 1, address = 0x43,settings = Settings(),maxExpectedCurrent = 5.0):
+    def __init__(self,bus = 1, address = 0x43,settings = Settings(),max_expected_current = 5.0):
         self.i2c = I2CDevice(bus=bus,address=address)
         self.settings = settings
-        self.lsb = LSB(maxExpectedCurrent,0.01)
+        self.lsb = LSB(max_expected_current,0.01)
 
 
     def connect(self):

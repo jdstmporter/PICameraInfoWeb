@@ -1,8 +1,7 @@
 from enum import Enum
 import math
 
-def notReady(value):
-    return value & 2 == 0
+
 
 class Registers(Enum):
     Configuration = 0

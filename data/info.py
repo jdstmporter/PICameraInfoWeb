@@ -40,6 +40,9 @@ class PiCamInfo:
     def json(self):
         return json.dumps(self.dict())
 
+    def sql(self):
+        return f"({', '.join(self.tuple())})"
+
 class PiCamMode:
     def __init__(self, **mode):
         fmt = mode['format']
@@ -54,4 +57,6 @@ class PiCamMode:
         self.width = size[0]
         self.height = size[1]
         self.fps = mode['fps']
+
+
 
