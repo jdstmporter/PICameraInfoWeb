@@ -43,7 +43,7 @@ class Gain(BaseParameter):
         super().__init__(code,None)
 
     @property
-    def iRange(self):
+    def i_range(self):
         return math.pow(2.0,self._code) * 0.04
 
 class ADC(BaseParameter):
@@ -51,11 +51,11 @@ class ADC(BaseParameter):
         super().__init__(code,(bits,samples))
 
     @property
-    def nBits(self):
+    def n_bits(self):
         return self.value[0]
 
     @property
-    def nSamples(self):
+    def n_samples(self):
         return self.value[1]
 
 

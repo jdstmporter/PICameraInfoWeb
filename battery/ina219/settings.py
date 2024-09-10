@@ -19,6 +19,9 @@ class Config:
     ADC12Bit64 = ADC(14, 12, 64)
     ADC12Bit128 = ADC(15, 12, 128)
 
+    def __init__(self,*args,**kwargs):
+        pass
+
 class Settings:
     def __init__(self,v_range = Config.Range16V, gain = Config.GainDiv2, adc = Config.ADC12Bit32, mode = Mode.ShuntAndBusContinuous):
         self.vRange = v_range

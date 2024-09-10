@@ -41,18 +41,18 @@ class UPSDevice:
         self.i2c.write16(Registers.Calibration.value, self.lsb.calibratedValue)
 
     @classmethod
-    def _decodeValue(cls,value,scale = 0.01):
+    def _decode_value(cls, value, scale = 0.01):
         add = 0 if value > 0 else 65535
         return(value+add)*scale
 
     @property
-    def shuntVoltage(self):
+    def shunt_voltage(self):
         self.calibrate()
         value = self.i2c.read16(Registers.ShuntVoltage.value)
-        return self._decodeValue(value,scale=self.lsb.shuntLSB)
+        return self._decode_value(value, scale=self.lsb.shuntLSB)
 
     @property
-    def busVoltage(self):
+    def bus_voltage(self):
         self.calibrate()
         self.i2c.read16(Registers.BusVoltage.value)
         value = self.i2c.read16(Registers.BusVoltage.value)
@@ -65,18 +65,18 @@ class UPSDevice:
         #return self.shuntVoltage()*self.lsb.calibratedValue/4096
         self.i2c.read16(Registers.Current.value)
         value = self.i2c.read16(Registers.Current.value)
-        return self._decodeValue(value,scale=self.lsb.currentLSB)
+        return self._decode_value(value, scale=self.lsb.currentLSB)
 
 
     @property
     def power(self):
         self.calibrate()
         value = self.i2c.read16(Registers.Power.value)
-        return self._decodeValue(value, scale=self.lsb.powerLSB)
+        return self._decode_value(value, scale=self.lsb.powerLSB)
 
 
     def __call__(self):
-        return UPSInfo(voltage=self.busVoltage, current=self.current)
+        return UPSInfo(voltage=self.bus_voltage, current=self.current)
 
 
 

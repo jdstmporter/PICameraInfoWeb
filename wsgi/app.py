@@ -36,7 +36,7 @@ class WSGIApp:
     def path(cls, string):
         return re.match('^/?(.*)$',string).groups()[0]
 
-    def getResponse(self,environ):
+    def get_response(self,environ):
         try:
             path = WSGIApp.path(environ['PATH_INFO'])
             if len(path) == 0:
@@ -55,7 +55,7 @@ class WSGIApp:
                                   text=str(e))
 
     def __call__(self, environ, start_response):
-        responder = self.getResponse(environ)
+        responder = self.get_response(environ)
         responder(start_response)
         return responder.text
 

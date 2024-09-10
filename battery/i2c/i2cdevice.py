@@ -29,12 +29,12 @@ class I2CDevice:
         data.reverse()
         return reduce(operator.or_,[data[b]<<(8*b) for b in range(len(data))])
 
-    def read(self,register,nBytes=4):
-        values = self.i2c.read_i2c_block_data(self.address, register, nBytes)
+    def read(self,register,nbytes=4):
+        values = self.i2c.read_i2c_block_data(self.address, register, nbytes)
         return self._bytes2int(values)
 
-    def write(self,register,data,nBytes=4):
-        values = self._int2bytes(data,nBytes)
+    def write(self,register,data,nbytes=4):
+        values = self._int2bytes(data,nbytes)
         self.i2c.write_i2c_block_data(self.address,register,values)
 
     def read8(self,register):
