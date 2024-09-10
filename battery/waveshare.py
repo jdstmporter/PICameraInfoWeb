@@ -1,4 +1,5 @@
-from .ina219 import Registers, Settings, LSB, notReady
+from util import Logger
+from .ina219 import Registers, Settings, LSB
 from .i2c import I2CDevice
 
 
@@ -29,7 +30,7 @@ class UPSDevice:
 
 
     def connect(self):
-        print('Connecting')
+        Logger.log.info('Connecting to UPS device')
         self.i2c.write16(Registers.Configuration.value,self.settings())
         self.calibrate()
 

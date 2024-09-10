@@ -1,4 +1,5 @@
 from data import DataStore
+from util import Logger
 from wsgi import WSGIApp
 from wsgiref.simple_server import make_server
 
@@ -8,16 +9,16 @@ class CameraServer:
         self.port=port
         with DataStore() as sql:
             self.info = sql.json()
-        print(f'Camera info is : {self.info}')
+        Logger.log.info(f'Camera info is : {self.info}')
 
     def start(self):
-        print('Starting server')
+        Logger.log.info('Starting server')
         app = WSGIApp(self.info)
 
-        print(f'Serving on port {self.ip}:{self.port}')
+        Logger.log.info(f'Serving on port {self.ip}:{self.port}')
         httpd = make_server(self.ip, self.port, app)
         try:
             httpd.serve_forever()
         except KeyboardInterrupt:
-            print('Interrupt')
+            Logger.log.warning('Keyboard interrupt: terminating')
             httpd.server_close()

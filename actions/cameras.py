@@ -1,5 +1,6 @@
 from data import DataStore
 from picam import PiCam
+from util import Logger
 
 class Cameras:
 

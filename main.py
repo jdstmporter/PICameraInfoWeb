@@ -3,6 +3,9 @@ from actions import BatteryDaemon, Cameras, CameraServer
 import argparse
 
 from actions.power import Battery
+from util import Logger
+
+Logger.make('PiCam log')
 
 parser = argparse.ArgumentParser(
     prog='PiCamInfo',
@@ -54,7 +57,7 @@ elif actor=='battery':
         parser.print_help()
 
 elif actor=='daemon':
-    print('Starting battery daemon')
+    Logger.log.info('Starting battery daemon')
     batteryDaemon = BatteryDaemon()
     batteryDaemon.start()
 

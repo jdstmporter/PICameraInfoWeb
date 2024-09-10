@@ -1,9 +1,10 @@
 import re
 from http import HTTPStatus
-
-from cups import HTTP_STATUS_OK
+from util import Logger
 
 from data import DataStore
+
+
 
 
 class ResponseObject:
@@ -50,7 +51,7 @@ class WSGIApp:
                                       text='NotFound')
 
         except Exception as e:
-            print(f'Error: {e}')
+            Logger.log.error(f'Error: {e}')
             return ErrorObject(status=HTTPStatus.INTERNAL_SERVER_ERROR,
                                   text=str(e))
 

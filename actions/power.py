@@ -2,6 +2,8 @@ from time import sleep
 
 from battery import UPSDevice
 from data import DataStore
+from util import Logger
+
 
 class Battery:
     def __init__(self):
@@ -44,9 +46,9 @@ class BatteryDaemon:
     def __call__(self):
         try:
             info = self.ups()
-            print(str(info))
+            Logger.log.info(str(info))
         except Exception as e:
-            print(f'Error = {e}')
+            Logger.log.error(f'Error = {e}')
 
     def start(self):
         run = True
@@ -56,9 +58,9 @@ class BatteryDaemon:
                 self.sql.battery=info
                 sleep(self.interval)
             except KeyboardInterrupt:
-                print('Keyboard interrupt: terminating')
+                Logger.log.warning('Keyboard interrupt: terminating')
                 run = False
             except Exception as e:
-                print(f'Error : {e}')
+                Logger.log.error(f'Error : {e}')
 
 

@@ -3,6 +3,9 @@ from functools import reduce
 
 import smbus
 
+from util import Logger
+
+
 class I2CDevice:
     def __init__(self,bus=1,address=0x00):
         self.bus=bus
@@ -13,7 +16,7 @@ class I2CDevice:
         try:
             self.i2c.close()
         except Exception as e:
-            print (f'Error closing i2c: {e}')
+            Logger.log.error(f'Error closing i2c: {e}')
 
 
     @classmethod
