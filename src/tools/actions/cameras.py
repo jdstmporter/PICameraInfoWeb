@@ -1,17 +1,19 @@
-from data import DataStore
-from picam import PiCam
-from util import Logger
+from .base import ToolAction
+from tools.data import DataStore
+from tools.picam import PiCam
 
-class Cameras:
+
+class Cameras(ToolAction):
 
     def __init__(self):
+        super().__init__('camera')
         self.cams = PiCam()
         self.sql = DataStore()
 
     def __del__(self):
             self.sql.close()
 
-    def __call__(self):
+    def _info(self):
         return [self.cams.cameras, self.cams.modes]
 
     @classmethod
@@ -26,7 +28,7 @@ class Cameras:
 
     def list(self):
         try:
-            cameras, modes = self()
+            cameras, modes = self._info()
             self.dump(cameras, modes)
         except Exception as e:
             print(f'Error : {e}')
@@ -41,7 +43,7 @@ class Cameras:
         try:
             print('Initialising camera info database')
             print('Getting camera info')
-            cameras, modes = Cameras()()
+            cameras, modes = self._info()
             Cameras.dump(cameras, modes)
 
             print('Loading database')

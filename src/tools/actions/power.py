@@ -1,17 +1,21 @@
 from time import sleep
 
-from battery import UPSDevice
-from data import DataStore
-from util import Logger
+from .base import BaseAction, ToolAction
+from tools.battery import UPSDevice
+from tools.data import DataStore
+from tools.util import Logger
 
 
-class Battery:
+class Battery(ToolAction):
     def __init__(self):
+        super().__init__('battery')
         self.ups=UPSDevice()
         self.sql = DataStore()
 
     def __del__(self):
         self.sql.close()
+
+
 
     def list(self):
         try:
@@ -32,8 +36,9 @@ class Battery:
 
 
 
-class BatteryDaemon:
-    def __init__(self,interval=10.0):
+class BatteryDaemon(BaseAction):
+    def __init__(self,interval=10):
+        super().__init__()
         self.interval=interval
         self.sql = DataStore()
         self.ups = UPSDevice()
@@ -43,14 +48,7 @@ class BatteryDaemon:
         self.ups.close()
         self.sql.close()
 
-    def __call__(self):
-        try:
-            info = self.ups()
-            Logger.log.info(str(info))
-        except Exception as e:
-            Logger.log.error(f'Error = {e}')
-
-    def start(self):
+    def __call__(self,**kwargs):
         run = True
         while run:
             try:

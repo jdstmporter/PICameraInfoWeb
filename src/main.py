@@ -1,11 +1,6 @@
 #!/usr/bin/env python3
-from actions import BatteryDaemon, Cameras, CameraServer
+from tools import BatteryDaemon, Cameras, CameraServer, Battery,Logger
 import argparse
-
-from actions.power import Battery
-from util import Logger
-
-Logger.make('PiCam log')
 
 parser = argparse.ArgumentParser(
     prog='PiCamInfo',
@@ -15,58 +10,33 @@ parser = argparse.ArgumentParser(
 subs = parser.add_subparsers(title='Modes of operation')
 parserC = subs.add_parser('camera',description='Camera actions',help='camera mode help')
 parserC.add_argument('action', action='store', dest='action', type=str, choices=['raw','load','store'])
-parserC.set_defaults(actor='camera')
+parserC.set_defaults(processor=Cameras)
 
 parserB = subs.add_parser('battery',description='Battery actions',help='battery mode help')
 parserB.add_argument('action', action='store', dest='action', type=str, choices=['raw','load','store'])
-parserB.set_defaults(actor='battery')
+parserB.set_defaults(processor=Battery)
 
 parserD = subs.add_parser('daemon',description='Run battery daemon')
-parserD.set_defaults(actor='daemon')
+parserD.set_defaults(processor=BatteryDaemon)
 
 parserS = subs.add_parser('service',description='Start web service')
 parserS.add_argument('-i', '--ip', action='store', default='0.0.0.0', dest='ip', nargs='?',help='IP for web server')
 parserS.add_argument('-p', '--port', action='store', default=8080, dest='port', type=int, nargs='?',help='Port for web server')
-parserS.set_defaults(actor='service')
+parserS.set_defaults(processor=CameraServer)
 
 namespace = parser.parse_args()
-actor = namespace.actor
-
-if actor=='camera':
-    action=namespace.action
-    c = Cameras()
-    if action=='raw':
-        c.list()
-    elif action=='load':
-        c.read()
-    elif action=='store':
-        c.write()
-    else:
-        parser.print_help()
-
-elif actor=='battery':
-    action = namespace.action
-    b = Battery()
-    if action == 'raw':
-        b.list()
-    elif action == 'load':
-        b.read()
-    elif action == 'store':
-        b.write()
-    else:
-        parser.print_help()
-
-elif actor=='daemon':
-    Logger.log.info('Starting battery daemon')
-    batteryDaemon = BatteryDaemon()
-    batteryDaemon.start()
-
-elif actor=='service':
-    c=CameraServer(namespace.ip,namespace.port)
-    c.start()
-
-else:
+try:
+    proc=namespace.processor()
+    proc(**vars(namespace))
+except Exception as e:
+    Logger.log.debug(f'Parser error: {e}')
     parser.print_help()
+
+
+
+
+
+
 
 
 

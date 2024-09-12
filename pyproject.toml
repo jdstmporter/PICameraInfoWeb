@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "tools.__version__"}
+
+[project]
+name = "tools"
+authors = [
+    {name = "Julian Porter", email = "julian@porternet.net"},
+]
+description = "Picam metadata servers and tools"
+readme = "README.rst"
+requires-python = ">=3.11"
+keywords = []
+license = {text = "BSD-3-Clause"}
+classifiers = []
+dependencies = [
+        "smbus2",
+        "picamera2",
+        "MySQLdb"
+    ]
+dynamic = ["version"]
+
+[project.scripts]
+cli-name = ".main"

@@ -1,4 +1,4 @@
-from util import Logger
+from tools.util import Logger
 from .ina219 import Registers, Settings, LSB
 from .i2c import I2CDevice
 

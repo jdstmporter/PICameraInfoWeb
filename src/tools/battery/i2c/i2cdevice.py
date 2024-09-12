@@ -1,16 +1,16 @@
 import operator
 from functools import reduce
 
-import smbus
+import smbus2
 
-from util import Logger
+from tools.util import Logger
 
 
 class I2CDevice:
     def __init__(self,bus=1,address=0x00):
         self.bus=bus
         self.address=address
-        self.i2c = smbus.SMBus(bus)
+        self.i2c = smbus2.SMBus(bus)
 
     def __del__(self):
         try:

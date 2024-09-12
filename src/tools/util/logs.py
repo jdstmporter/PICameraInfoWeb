@@ -75,6 +75,8 @@ class Logger:
     def make(cls,name=__name__,options=LogOptions()):
         cls.log = Logger(name,options=options)
 
+Logger.make()
+
 
 
 
