@@ -1,1 +1,1 @@
-from .waveshare import UPSDevice, UPSInfo
+from .waveshare import UPSDevice

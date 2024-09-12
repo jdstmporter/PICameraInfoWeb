@@ -1,17 +1,7 @@
-from enum import Enum
+import enum
 import math
 
-
-
-class Registers(Enum):
-    Configuration = 0
-    ShuntVoltage = 1
-    BusVoltage = 2
-    Power = 3
-    Current = 4
-    Calibration = 5
-
-class Mode(Enum):
+class Mode(enum.Enum):
     PowerDown = 0x00  # power down
     ShuntTriggered = 0x01  # shunt voltage triggered
     BusTriggered = 0x02  # bus voltage triggered
@@ -57,7 +47,4 @@ class ADC(BaseParameter):
     @property
     def n_samples(self):
         return self.value[1]
-
-
-
 

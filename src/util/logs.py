@@ -1,8 +1,7 @@
 import logging
 import logging.handlers
-from enum import Enum, Flag, auto
-from collections import defaultdict
-from syslog import LOG_LOCAL0, LOG_USER
+from enum import Flag, auto
+from syslog import LOG_USER
 
 
 class LogOutput(Flag):

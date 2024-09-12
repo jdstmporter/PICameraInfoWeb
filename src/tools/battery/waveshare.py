@@ -1,25 +1,11 @@
-from tools.util import Logger
+import util
 from .ina219 import Registers, Settings, LSB
 from .i2c import I2CDevice
 
+from data.info import UPSInfo
 
 
-class UPSInfo:
-    def __init__(self,voltage = 0.0,current = 0.0,timestamp = None):
-        self.voltage = round(voltage,3)
-        self.current = round(current,6)
-        self.timestamp = timestamp
 
-    @property
-    def percentage(self):
-        p = (self.voltage - 3) / 1.2 * 100
-        return round(max([0.0, min([p, 100.0])]),2)
-
-    def __iter__(self):
-        return iter([self.voltage, self.current, self.percentage])
-
-    def __str__(self):
-        return f'Load = {self.voltage}V, current = {self.current*1000}mA, percentage = {self.percentage}%'
 
 class UPSDevice:
 
@@ -30,7 +16,7 @@ class UPSDevice:
 
 
     def connect(self):
-        Logger.log.info('Connecting to UPS device')
+        util.Logger.log.info('Connecting to UPS device')
         self.i2c.write16(Registers.Configuration.value,self.settings())
         self.calibrate()
 

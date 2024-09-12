@@ -1,12 +1,63 @@
-from .base import ToolAction
-from tools.data import DataStore
-from tools.picam import PiCam
+
+from data import DataStore
+from tools import UPSDevice, PiCam
+
+class ToolAction:
+
+
+    def list(self):
+        pass
+
+    def read(self):
+        pass
+
+    def write(self):
+        pass
+
+    def __call__(self,*args,**kwargs):
+        action=kwargs['action']
+        if action == 'raw':
+            self.list()
+        elif action == 'load':
+            self.read()
+        elif action == 'store':
+            self.write()
+        else:
+            raise Exception(f'Unknown action {action} on tool processor')
+
+
+class Battery(ToolAction):
+    def __init__(self):
+        self.ups=UPSDevice()
+        self.sql = DataStore()
+
+    def __del__(self):
+        self.sql.close()
+
+
+
+    def list(self):
+        try:
+            info = self.ups()
+            print(str(info))
+        except Exception as e:
+            print(f'Error = {e}')
+
+    def read(self):
+        pass
+
+    def write(self):
+        try:
+            info = self.ups()
+            self.sql.battery = info
+        except Exception as e:
+            print(f'Error: {e}')
+
+
 
 
 class Cameras(ToolAction):
-
     def __init__(self):
-        super().__init__('camera')
         self.cams = PiCam()
         self.sql = DataStore()
 

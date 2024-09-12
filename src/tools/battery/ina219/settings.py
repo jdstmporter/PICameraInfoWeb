@@ -1,3 +1,5 @@
+
+
 from .ina219device import VoltageRange, Gain, ADC, Mode
 
 class Config:
@@ -37,6 +39,9 @@ class Settings:
     def maxVoltage(self):
         return self.vRange.value
 
+
+
+
 class LSB:
     def __init__(self,maximumExpectedCurrent=1,rShunt=0.01):
         self.rShunt = rShunt
@@ -46,3 +51,6 @@ class LSB:
         self.powerLSB = 20.0 * self.currentLSB
 
         self.calibratedValue = int(0.04096 / (self.currentLSB * self.rShunt))
+
+
+

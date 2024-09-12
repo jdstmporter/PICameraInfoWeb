@@ -1,9 +1,8 @@
 import operator
 from functools import reduce
-
 import smbus2
 
-from tools.util import Logger
+import util
 
 
 class I2CDevice:
@@ -16,7 +15,7 @@ class I2CDevice:
         try:
             self.i2c.close()
         except Exception as e:
-            Logger.log.error(f'Error closing i2c: {e}')
+            util.Logger.log.error(f'Error closing i2c: {e}')
 
 
     @classmethod

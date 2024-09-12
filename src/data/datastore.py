@@ -1,11 +1,11 @@
-from enum import Enum
+import enum
 import json
 
 from .info import PiCamInfo
 from .mysql import MysqlStore
 
 
-class DataMode(Enum):
+class DataMode(enum.Enum):
     Battery = 1
     Cameras = 2
     Modes = 3
@@ -87,7 +87,7 @@ class DataStore:
     def battery(self):
         return self.db.read(DataMode.Battery)
 
-    def batteryJSON(self):
+    def battery_json(self):
         v, i, p = self.battery
         d = dict(voltage = v, current = i, percentage = p)
         return json.dumps(d)

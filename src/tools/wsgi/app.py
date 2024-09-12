@@ -1,8 +1,8 @@
 import re
 from http import HTTPStatus
-from tools.util import Logger
+from util import Logger
 
-from tools.data import DataStore
+from data import DataStore
 
 
 
@@ -43,7 +43,7 @@ class WSGIApp:
             if len(path) == 0:
                 return DataObject(self.json)
             elif path == 'power':
-                info = self.datastore.batteryJSON()
+                info = self.datastore.battery_json()
                 return DataObject(info)
 
             else:

@@ -1,18 +1,18 @@
-from picamera2 import Picamera2
-from tools.data import PiCamInfo, PiCamMode
+import picamera2
+from data.info import PiCamInfo, PiCamMode
 import json
 
 
 
 class PiCam:
     def __init__(self):
-        cams = Picamera2.global_camera_info()
+        cams = picamera2.Picamera2.global_camera_info()
         self.cams = [c['Model'] for c in cams]
 
 
 
     def __camera(self, index):
-        camera = Picamera2(index)
+        camera = picamera2.Picamera2(index)
         modes = camera.sensor_modes
         return [PiCamInfo(index, self.cams[index], PiCamMode(**mode)) for mode in modes]
 

@@ -1,6 +1,6 @@
 
 import MySQLdb
-from tools.util import Logger
+from util import Logger
 
 class MysqlStore:
 
