@@ -1,6 +1,6 @@
 from data import DataStore
 from util import Logger
-from tools.wsgi import WSGIApp
+from .wsgi import WSGIApp
 from tools import UPSDevice
 from wsgiref.simple_server import make_server
 from time import sleep
