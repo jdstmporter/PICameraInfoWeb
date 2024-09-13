@@ -11,17 +11,12 @@ class LogOutput(enum.Flag):
     STDERR = enum.auto()
 
 class LogOptions:
-    Levels = {
-        'debug': logging.DEBUG,
-        'info' : logging.INFO,
-        'warning' : logging.WARNING,
-        'error' : logging.ERROR
-    }
+
 
     def __init__(self,output = LogOutput.STDERR,**kwargs):
         self.opts = {
             'output' : output,
-            'level' : kwargs.get('level', logging.INFO)
+            'level' : kwargs.get('level', logging.DEBUG)
         }
 
         if LogOutput.FILE in output:
@@ -39,6 +34,13 @@ class LogOptions:
 
 
 class Logger:
+
+    Levels = {
+        'debug': logging.DEBUG,
+        'info' : logging.INFO,
+        'warning' : logging.WARNING,
+        'error' : logging.ERROR
+    }
 
     def __init__(self,name,options = LogOptions()):
         self.logger = logging.getLogger(name)

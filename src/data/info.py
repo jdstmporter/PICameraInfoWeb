@@ -40,7 +40,7 @@ class PiCamInfo:
         return json.dumps(self.dict())
 
     def sql(self):
-        return f"({', '.join(self.tuple())})"
+        return f"({self.index}, '{self.format}', {self.width}, {self.height}, {self.fps})"
 
 class PiCamMode:
     def __init__(self, **mode):

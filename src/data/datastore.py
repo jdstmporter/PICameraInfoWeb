@@ -97,7 +97,7 @@ class DataStore:
         vals = f"({value.voltage}, {value.current}, {value.percentage})"
         self.db.write(DataMode.Battery, vals)
 
-    def allBattery(self,origin=None):
+    def all_battery(self,origin=None):
         if origin is None:
             sql = 'SELECT timestamp, voltage, current, percentage FROM picam.battery ORDER BY timestamp'
         else:

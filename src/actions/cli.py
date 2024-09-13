@@ -2,6 +2,7 @@ import traceback
 
 from data import DataStore
 from tools import UPSDevice, PiCam
+import util
 
 class ToolAction:
     def list(self):
@@ -41,19 +42,27 @@ class BatteryTool(ToolAction):
             info = self.ups()
             print(str(info))
         except Exception as e:
-            print(f'Error = {e}')
-            traceback.print_exc()
+            util.handle_error(e)
 
 
     def read(self):
-        pass
+        try:
+            info = self.sql.all_battery()
+            print('timestamp,voltage,current,percentage')
+            for row in info:
+                row_str = [str(i) for i in row]
+                print(f"'{row_str[0]}',{row_str[1]},{row_str[2]},{row_str[3]}")
+        except Exception as e:
+            util.handle_error(e)
+
+
 
     def write(self):
         try:
             info = self.ups()
             self.sql.battery = info
         except Exception as e:
-            print(f'Error: {e}')
+            util.handle_error(e)
 
 
 
@@ -84,13 +93,13 @@ class CameraTool(ToolAction):
             cameras, modes = self._info()
             self.dump(cameras, modes)
         except Exception as e:
-            print(f'Error : {e}')
+            util.handle_error(e)
 
     def read(self):
         try:
             CameraTool.dump(self.sql.cameras, self.sql.modes)
         except Exception as e:
-            print(f'Error : {e}')
+            util.handle_error(e)
 
     def write(self):
         try:
@@ -99,10 +108,11 @@ class CameraTool(ToolAction):
             cameras, modes = self._info()
             CameraTool.dump(cameras, modes)
 
-            print('Loading database')
+            print('Loading database : cameras')
             self.sql.cameras = cameras
+            print('Loading database : modes')
             self.sql.modes = modes
         except Exception as e:
-            print(f'Error: {e}')
+            util.handle_error(e)
 
 
