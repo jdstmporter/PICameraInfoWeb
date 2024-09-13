@@ -29,8 +29,16 @@ class BaseParameter:
     def value(self):
         return self._value
 
-    def __call__(self):
+    @property
+    def code(self):
         return self._code
+
+    def __call__(self):
+        #print(str(self))
+        return self._code
+
+    def __str__(self):
+        return f'CODE [{self._code}] VALUE[{self._value}]'
 
 
 class VoltageRange(BaseParameter):
@@ -88,12 +96,16 @@ class Settings:
         self.mode = mode
 
     def __call__(self):
+        #print(str(self))
         adc = self.adc()
         return (self.vRange()<<13) | (self.gain() << 11) | (adc << 7) | (adc << 3) | self.mode.value
 
     @property
     def maxVoltage(self):
         return self.vRange.value
+
+    def __str__(self):
+        return f'V[{self.vRange}] G[{self.gain}] ADC[{self.adc}] MODE[{self.mode}]'
 
 class INA219:
 
@@ -134,7 +146,7 @@ class INA219:
     def __getattr__(self,key):
         register = self.register_keys[key]
         value = self._read(register)
-        return self._decode(register,value)
+        return lambda : self._decode(register,value)
 
     def configure(self,config):
         self._write(Registers.Configuration,config)

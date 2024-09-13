@@ -1,2 +1,2 @@
-from .cli import Cameras, Battery
+from .cli import CameraTool, BatteryTool
 from .server import CameraServer, BatteryDaemon

@@ -1,6 +1,7 @@
 import logging
 import logging.handlers
 import enum
+import traceback
 from syslog import LOG_USER
 
 
@@ -56,6 +57,10 @@ class Logger:
 
     def _log(self, level, message, *args, **kwargs):
         self.logger.log(level,message,*args,extra=kwargs)
+
+    def exception(self,e):
+        msg = f'{e}\n{traceback.format_exc()}'
+        self._log(logging.CRITICAL,msg)
 
     def __getattr__(self, key):
         try:

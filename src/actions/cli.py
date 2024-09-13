@@ -1,3 +1,4 @@
+import traceback
 
 from data import DataStore
 from tools import UPSDevice, PiCam
@@ -24,9 +25,9 @@ class ToolAction:
             raise Exception(f'Unknown action {action} on tool processor')
 
 
-class Battery(ToolAction):
+class BatteryTool(ToolAction):
     def __init__(self):
-        self.ups=UPSDevice()
+        self.ups = UPSDevice()
         self.sql = DataStore()
 
     def __del__(self):
@@ -36,10 +37,13 @@ class Battery(ToolAction):
 
     def list(self):
         try:
+            #print(f'UPS[{self.ups}]')
             info = self.ups()
             print(str(info))
         except Exception as e:
             print(f'Error = {e}')
+            traceback.print_exc()
+
 
     def read(self):
         pass
@@ -54,7 +58,7 @@ class Battery(ToolAction):
 
 
 
-class Cameras(ToolAction):
+class CameraTool(ToolAction):
     def __init__(self):
         self.cams = PiCam()
         self.sql = DataStore()
@@ -84,7 +88,7 @@ class Cameras(ToolAction):
 
     def read(self):
         try:
-            Cameras.dump(self.sql.cameras, self.sql.modes)
+            CameraTool.dump(self.sql.cameras, self.sql.modes)
         except Exception as e:
             print(f'Error : {e}')
 
@@ -93,7 +97,7 @@ class Cameras(ToolAction):
             print('Initialising camera info database')
             print('Getting camera info')
             cameras, modes = self._info()
-            Cameras.dump(cameras, modes)
+            CameraTool.dump(cameras, modes)
 
             print('Loading database')
             self.sql.cameras = cameras

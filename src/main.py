@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from actions import Cameras, Battery, BatteryDaemon, CameraServer
+import actions
 from util import Logger
 import argparse
 
@@ -10,22 +10,26 @@ parser = argparse.ArgumentParser(
 
 subs = parser.add_subparsers(title='Modes of operation')
 parserC = subs.add_parser('camera',description='Camera actions',help='camera mode help')
-parserC.add_argument('action', action='store', dest='action', type=str, choices=['raw','load','store'])
-parserC.set_defaults(processor=Cameras)
+parserC.add_argument('action', action='store', type=str, choices=['raw','load','store'])
+parserC.set_defaults(processor=actions.CameraTool)
 
 parserB = subs.add_parser('battery',description='Battery actions',help='battery mode help')
-parserB.add_argument('action', action='store', dest='action', type=str, choices=['raw','load','store'])
-parserB.set_defaults(processor=Battery)
+parserB.add_argument('action', action='store', type=str, choices=['raw','load','store'])
+parserB.set_defaults(processor=actions.BatteryTool)
 
 parserD = subs.add_parser('daemon',description='Run battery daemon')
-parserD.set_defaults(processor=BatteryDaemon)
+parserD.set_defaults(processor=actions.BatteryDaemon)
 
 parserS = subs.add_parser('service',description='Start web service')
 parserS.add_argument('-i', '--ip', action='store', default='0.0.0.0', dest='ip', nargs='?',help='IP for web server')
 parserS.add_argument('-p', '--port', action='store', default=8080, dest='port', type=int, nargs='?',help='Port for web server')
-parserS.set_defaults(processor=CameraServer)
+parserS.set_defaults(processor=actions.CameraServer)
 
 namespace = parser.parse_args()
+
+ns = vars(namespace)
+for k,v in ns.items():
+    print(f"Key [{k}] Value [{v}]")
 try:
     proc=namespace.processor()
     proc(**vars(namespace))
