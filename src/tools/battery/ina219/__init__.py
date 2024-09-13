@@ -1,2 +1,1 @@
-from .settings import Settings, Config, LSB
-from .registers import Registers
+from .ina219device import INA219, Settings

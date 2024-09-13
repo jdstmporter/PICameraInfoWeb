@@ -1,2 +1,2 @@
-from .cameras import Cameras, Battery
+from .cli import Cameras, Battery
 from .server import CameraServer, BatteryDaemon

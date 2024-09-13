@@ -3,8 +3,6 @@ from data import DataStore
 from tools import UPSDevice, PiCam
 
 class ToolAction:
-
-
     def list(self):
         pass
 

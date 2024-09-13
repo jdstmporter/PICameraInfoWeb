@@ -1,19 +1,15 @@
 import logging
 import logging.handlers
-from enum import Flag, auto
+import enum
 from syslog import LOG_USER
 
 
-class LogOutput(Flag):
-    SYSLOG = auto()
-    FILE = auto()
-    STDERR = auto()
-
-
-
+class LogOutput(enum.Flag):
+    SYSLOG = enum.auto()
+    FILE = enum.auto()
+    STDERR = enum.auto()
 
 class LogOptions:
-
     Levels = {
         'debug': logging.DEBUG,
         'info' : logging.INFO,
