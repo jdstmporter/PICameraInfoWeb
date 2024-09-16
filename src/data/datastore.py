@@ -33,7 +33,7 @@ class DataMode(enum.Enum):
 
     def readSQL(self,**kwargs):
         if self == DataMode.Battery:
-            return 'select timestamp, percentage from picam.battery where timestamp = (SELECT max(timestamp) FROM battery) LIMIT 1'
+            return 'select unix_timestamp(timestamp) as dtg, voltage, current, percentage from picam.battery where timestamp = (SELECT max(timestamp) FROM battery) LIMIT 1'
         elif self == DataMode.Cameras:
             return 'select model FROM picam.cameras ORDER BY idx'
         elif self == DataMode.Modes:
@@ -89,8 +89,8 @@ class DataStore:
         return self.db.read(DataMode.Battery)
 
     def battery_json(self):
-        v, i, p = self.battery
-        d = dict(voltage = v, current = i, percentage = p)
+        t, v, i, p = self.battery
+        d = dict(timestamp = t,voltage = v, current = i, percentage = p)
         return json.dumps(d)
 
     @battery.setter
@@ -102,7 +102,7 @@ class DataStore:
         if origin is None:
             sql = 'SELECT timestamp, voltage, current, percentage FROM picam.battery ORDER BY timestamp'
         else:
-           sql = f'SELECT timestamp, voltage, current, percentage FROM picam.battery WHERE timestamp >= FROM_UNIXTIME({origin}) ORDER BY timestamp'
+           sql = f'SELECT timestamp, voltage, current, percentage FROM picam.battery WHERE unix_timestamp(timestamp) >= {origin} ORDER BY timestamp'
         return self.db.select(sql)
 
     def clean_battery(self,**kwargs):
