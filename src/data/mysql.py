@@ -24,8 +24,8 @@ class MysqlStore:
         self.cursor.execute(sql)
         return self.cursor.fetchall()
 
-    def clean(self,mode):
-        sql = mode.deleteSQL()
+    def clean(self,mode,**kwargs):
+        sql = mode.deleteSQL(**kwargs)
         Logger.log.debug(sql)
         self._tx(sql)
 

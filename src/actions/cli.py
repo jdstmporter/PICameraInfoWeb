@@ -14,6 +14,9 @@ class ToolAction:
     def write(self):
         pass
 
+    def clean(self,**kwargs):
+        pass
+
     def __call__(self,*args,**kwargs):
         action=kwargs['action']
         if action == 'raw':
@@ -22,6 +25,8 @@ class ToolAction:
             self.read()
         elif action == 'store':
             self.write()
+        elif action == 'clean':
+            self.clean()
         else:
             raise Exception(f'Unknown action {action} on tool processor')
 
@@ -55,8 +60,6 @@ class BatteryTool(ToolAction):
         except Exception as e:
             util.handle_error(e)
 
-
-
     def write(self):
         try:
             info = self.ups()
@@ -64,7 +67,11 @@ class BatteryTool(ToolAction):
         except Exception as e:
             util.handle_error(e)
 
-
+    def clean(self,**kwargs):
+        try:
+            self.sql.clean_battery(**kwargs)
+        except Exception as e:
+            util.handle_error(e)
 
 
 class CameraTool(ToolAction):

@@ -14,7 +14,7 @@ parserC.add_argument('action', action='store', type=str, choices=['raw','load','
 parserC.set_defaults(processor=actions.CameraTool)
 
 parserB = subs.add_parser('battery',description='Battery actions',help='battery mode help')
-parserB.add_argument('action', action='store', type=str, choices=['raw','load','store'])
+parserB.add_argument('action', action='store', type=str, choices=['raw','load','store','clean'])
 parserB.set_defaults(processor=actions.BatteryTool)
 
 parserD = subs.add_parser('daemon',description='Run battery daemon')

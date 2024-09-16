@@ -10,9 +10,10 @@ class DataMode(enum.Enum):
     Cameras = 2
     Modes = 3
 
-    def deleteSQL(self):
+    def deleteSQL(self,**kwargs):
         if self == DataMode.Battery:
-            return 'DELETE FROM battery WHERE timestamp < TIMESTAMPADD(DAY, -7, CURRENT_TIMESTAMP)'
+            days = kwargs.get('retain',7)
+            return f'DELETE FROM battery WHERE timestamp < TIMESTAMPADD(DAY, -{days}, CURRENT_TIMESTAMP)'
         elif self == DataMode.Cameras:
             return 'DELETE FROM picam.cameras WHERE idx>=0'
         elif self == DataMode.Modes:
@@ -20,7 +21,7 @@ class DataMode(enum.Enum):
         else:
             raise Exception('No such operating mode')
 
-    def insertSQL(self,data):
+    def insertSQL(self,data,**kwargs):
         if self == DataMode.Battery:
             return f"INSERT INTO picam.battery (voltage, current, percentage) values {data}"
         elif self == DataMode.Cameras:
@@ -30,7 +31,7 @@ class DataMode(enum.Enum):
         else:
             raise Exception('No such operating mode')
 
-    def readSQL(self):
+    def readSQL(self,**kwargs):
         if self == DataMode.Battery:
             return 'select timestamp, percentage from picam.battery where timestamp = (SELECT max(timestamp) FROM battery) LIMIT 1'
         elif self == DataMode.Cameras:
@@ -95,7 +96,7 @@ class DataStore:
     @battery.setter
     def battery(self, value):
         vals = f"({value.voltage}, {value.current}, {value.percentage})"
-        self.db.write(DataMode.Battery, vals)
+        self.db.write(DataMode.Battery, vals, clean=False)
 
     def all_battery(self,origin=None):
         if origin is None:
@@ -103,5 +104,9 @@ class DataStore:
         else:
            sql = f'SELECT timestamp, voltage, current, percentage FROM picam.battery WHERE timestamp >= FROM_UNIXTIME({origin}) ORDER BY timestamp'
         return self.db.select(sql)
+
+    def clean_battery(self,**kwargs):
+        self.db.clean(DataMode.Battery,**kwargs)
+
 
 
