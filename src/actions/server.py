@@ -40,6 +40,7 @@ class BatteryDaemon:
         run = True
         while run:
             try:
+                Logger.log.debug('Logging battery level...')
                 info = self.ups()
                 self.sql.battery=info
                 sleep(self.interval)

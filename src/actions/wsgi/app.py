@@ -41,8 +41,10 @@ class WSGIApp:
         try:
             path = WSGIApp.path(environ['PATH_INFO'])
             if len(path) == 0:
+                pass
+            elif path == 'cams':
                 return DataObject(self.json)
-            elif path == 'power':
+            elif path == 'batt':
                 info = self.datastore.battery_json()
                 return DataObject(info)
 

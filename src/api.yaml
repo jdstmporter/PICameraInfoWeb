@@ -1,0 +1,171 @@
+openapi: '3.0.0'
+info:
+  version: '1.0.0'
+  title: 'PiCam Information REST service'
+  description: Get information about a PiCAM server
+  license:
+    name: BSD 3 Clause
+servers:
+- url: http://{host}:{port}
+  description: REST server on the PiCam machine
+  variables:
+    host:
+      default: '127.0.0.1'
+      description: the DNS name or IPv4 address of this PiCam server
+    port:
+      default: '8080'
+      description: the TCP port used by the REST server
+
+
+paths:
+   /:
+     get:
+       summary: get OpenAPI specification
+       responses:
+         '200':
+           description: The OpenAPI interface description file for this service
+           content:
+             application/json:
+               schema:
+                 $ref: 'https://spec.openapis.org/oas/3.0/schema/2021-09-28'
+   /cams:
+    get:
+      summary: Get records specifying supported camera modes
+      responses:
+        '200':
+          description: A list of records specifying supported modes for cameras attached to the server
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cameras'
+        500:
+          $ref: '#/components/responses/500Error'
+   /batt:
+    get:
+      summary: Get server's current battery status
+      responses:
+        '200':
+          description: Detail on the current battery status (voltage, current, percentage of charge remaining)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Battery'
+        500:
+          $ref: '#/components/responses/500Error'
+
+   /batt/{ts}:
+    get:
+        parameters:
+        - name: ts
+          in: path
+          required: true
+          schema:
+            type: number
+            minimum: 0
+        summary: Get historic battery records since the timestamp
+        responses:
+          '200':
+            description: list of CSV records setting out timestamp, voltage, current, percentage of charge remaining 
+            content:
+              text/csv:
+                schema:
+                  type: string
+                example: |-
+                  timestamp, voltage, current, percentage
+                  2024-10-17 09:17:03, 4.7, 100.23, 47.9
+                  2024-10-17 09:19:04  4.6, 87.2, 45
+          500:
+            $ref: '#/components/responses/500Error'
+    delete:
+        parameters:
+        - name: ts
+          in: path
+          required: true
+          schema:
+            type: number
+            minimum: 0
+        summary: Delete historical records created before the timestamp
+        responses:
+          '200':
+            description: has deleted all battery records with timestamp before {ts}
+          500:
+            $ref: '#/components/responses/500Error'
+            
+components:
+  responses:
+    500Error:
+        description: An unexpected error has occurred while processing the request
+        content:
+            text/plain: {}
+
+  schemas:
+    Cameras:
+      type: object
+      required:
+        - cameras
+        - modes
+      properties:
+        cameras:
+          type: array
+          items:
+            $ref: '#/components/schemas/CameraIdentifier'
+          minItems: 0
+        modes:
+          type: array
+          items:
+            $ref: '#/components/schemas/CameraMode'
+      minItems: 0
+
+    CameraIdentifier:
+      type: string
+      description: identifier of an attached camera device
+
+    CameraMode:
+      description: mode of operation supported by a camera
+      type: object
+      required:
+        - camera
+        - format
+        - width
+        - height
+        - fps
+      properties:
+        camera:
+          description: index of the relevant camera in cameras list (0 up)
+          type: integer
+        format:
+          description: mode format identifier
+          type: string
+        width:
+          description: image width in pixels
+          type: integer
+        height:
+          description: image height in pixels
+          type: integer
+        fps:
+          description: supported frames per second
+          type: number
+
+    Battery:
+      type: object
+      required:
+        - voltage
+        - current
+        - percentage
+      properties:
+        voltage:
+          description: The bus voltage in volts
+          type: number
+        current:
+          description: The current drae in milliamps
+          type: number
+        percentage:
+          description: percentage remaining of battery charge
+          type: number
+
+
+
+    
+            
+
+  
