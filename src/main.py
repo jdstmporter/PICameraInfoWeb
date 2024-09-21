@@ -33,10 +33,10 @@ parserD.set_defaults(processor=actions.BatteryDaemon)
 
 # TODO Test service
 #      URLS to test:
-#      / : currently camera, should be api
+#      / : api
 #      /cam : camera
 #      /batt : battery
-#      /batt?ts=nnnnnn : battery CSV since specified unix timestamp
+#      /batt/nnnnnn : battery CSV since specified unix timestamp
 parserS = subs.add_parser('service',description='Start web service')
 parserS.add_argument('-i', '--ip', action='store', default='0.0.0.0', dest='ip', nargs='?',help='IP for web server')
 parserS.add_argument('-p', '--port', action='store', default=8080, dest='port', type=int, nargs='?',help='Port for web server')
