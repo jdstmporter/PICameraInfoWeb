@@ -43,39 +43,29 @@ paths:
    /batt:
     get:
       summary: Get server's current battery status
+      parameters:
+      - name: since
+        in: query
+        required: false
+        schema:
+           type: integer
+           minimum: 0
+        description: timestamp for earliest record recovered (most recent if niot present)
+
+
       responses:
         '200':
           description: Detail on the current battery status (voltage, current, percentage of charge remaining)
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Battery'
+                oneOf:
+                - $ref: '#/components/schemas/Battery'
+                - $ref: '#/components/schemas/BatteryList'
         500:
           $ref: '#/components/responses/500Error'
 
-   /batt/{ts}:
-    get:
-        parameters:
-        - name: ts
-          in: path
-          required: true
-          schema:
-            type: number
-            minimum: 0
-        summary: Get historic battery records since the timestamp
-        responses:
-          '200':
-            description: list of CSV records setting out timestamp, voltage, current, percentage of charge remaining 
-            content:
-              text/csv:
-                schema:
-                  type: string
-                example: |-
-                  timestamp, voltage, current, percentage
-                  2024-10-17 09:17:03, 4.7, 100.23, 47.9
-                  2024-10-17 09:19:04  4.6, 87.2, 45
-          500:
-            $ref: '#/components/responses/500Error'
+
     delete:
         parameters:
         - name: ts
@@ -162,6 +152,29 @@ components:
         percentage:
           description: percentage remaining of battery charge
           type: number
+
+    TimeStamp:
+      type: object
+      required:
+        - unix
+        - timestamp
+      properties:
+        unix:
+          description: UNIX timestamp
+          type: integer
+        timestamp:
+          description: Human readable timestamp
+          type: string
+
+    ExtendedBattery:
+      allOf:
+      - $ref: '#/components/schemas/Battery'
+      - $ref: '#/components/schemas/TimeStamp'
+
+    BatteryList:
+      type: array
+      items:
+        $ref: '#/components/schemas/ExtendedBattery'
 
 
 

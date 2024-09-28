@@ -10,12 +10,17 @@ class CameraServer:
         with DataStore() as sql:
             self.info = sql.json()
         Logger.log.info(f'Camera info is : {self.info}')
+        try:
+            with open('/usr/local/etc/picam/api.yaml','r') as api:
+                self.api=api.read()
+        except:
+            self.api=None
 
     def __call__(self,**kwargs):
         Logger.log.info('Starting server')
         ip = kwargs.get('ip','0.0.0.0')
         port = kwargs.get('port',8080)
-        app = WSGIApp(self.info)
+        app = WSGIApp(self.info,self.api)
 
         Logger.log.info(f'Serving on port {ip}:{port}')
         httpd = make_server(ip, port, app)

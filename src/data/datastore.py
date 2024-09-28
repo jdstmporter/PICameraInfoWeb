@@ -100,10 +100,19 @@ class DataStore:
 
     def all_battery(self,origin=None):
         if origin is None:
-            sql = 'SELECT timestamp, voltage, current, percentage FROM picam.battery ORDER BY timestamp'
+            sql = 'SELECT unix_timestamp(timestamp) unix, timestamp, voltage, current, percentage FROM picam.battery ORDER BY timestamp'
         else:
-           sql = f'SELECT timestamp, voltage, current, percentage FROM picam.battery WHERE unix_timestamp(timestamp) >= {origin} ORDER BY timestamp'
+           sql = f'SELECT unix_timestamp(timestamp) unix, timestamp, voltage, current, percentage FROM picam.battery WHERE unix_timestamp(timestamp) >= {origin} ORDER BY timestamp'
         return self.db.select(sql)
+
+    def all_battery_json(self,origin=None):
+        rows = self.all_battery(origin=origin)
+        out=[]
+        for row in rows:
+            u,t,v,i,p = row
+            out.append(dict(unix = u,timestamp = str(t),voltage = v, current = i, percentage = p))
+        return json.dumps(out)
+
 
     def clean_battery(self,**kwargs):
         self.db.clean(DataMode.Battery,**kwargs)

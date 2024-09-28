@@ -5,6 +5,7 @@ cd "$HOME/developer"
 tar czf dev.tgz src
 scp dev.tgz rpi02w.local:.
 ssh rpi02w.local "tar xf dev.tgz"
+ssh rpi02w.local "cp src/api.yaml /usr/local/etc/picam"
 
 
 
