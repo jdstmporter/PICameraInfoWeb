@@ -28,6 +28,9 @@ class WSGIError(Exception):
         self.response(respond)
         return self.response.text
 
+class NotImplementedResponse(WSGIError):
+    def __init__(self,message=''):
+        super().__init__(status=HTTPStatus.NOT_IMPLEMENTED,message=message)
 
 class NotFoundResponse(WSGIError):
     def __init__(self,message=''):
@@ -44,4 +47,8 @@ class BadRequestResponse(WSGIError):
 class UnauthorisedResponse(WSGIError):
     def __init__(self,message=''):
         super().__init__(status=HTTPStatus.UNAUTHORIZED, message=message)
+
+class NoAuthorisationToken(WSGIError):
+    def __init__(self,message=''):
+        super().__init__(status=HTTPStatus.NETWORK_AUTHENTICATION_REQUIRED, message=message)
 

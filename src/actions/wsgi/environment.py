@@ -1,5 +1,7 @@
 import re
 from http import HTTPMethod
+
+from actions.wsgi.responses import NoAuthorisationToken
 from util import Logger
 
 class WSGIEnv:
@@ -27,6 +29,14 @@ class WSGIEnv:
             except Exception as e:
                 Logger.log.error(f'Error getting WSGI headers : {e}')
         return out
+
+    def auth_key(self):
+        try:
+            return self._env['HTTP_AUTHORIZATION']
+        except Exception as e:
+            Logger.log.error(f'Cannot get authorization token : {e}')
+            raise NoAuthorisationToken()
+
 
     def query(self):
         try:

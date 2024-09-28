@@ -1,8 +1,45 @@
 from http import HTTPMethod
 
-from .responses import BadRequestResponse, WSGIError, ServerErrorResponse, JSONResponse, Response, NotFoundResponse
+from .responses import BadRequestResponse, WSGIError, ServerErrorResponse, JSONResponse, Response, NotFoundResponse, \
+    NotImplementedResponse, NoAuthorisationToken
 from .environment import WSGIEnv
 from data import DataStore
+
+
+class WSGIAction:
+
+    @classmethod
+    def methods(cls):
+        return []
+
+    @classmethod
+    def isSecure(cls):
+        return False
+
+    @classmethod
+    def match(cls,env):
+        return env.method() in cls.methods()
+
+
+
+
+    def __init__(self,datastore,**kwargs):
+        self.datastore=datastore
+        self.env=WSGIEnv(dict())
+
+
+
+    def authenticate(self):
+        raise NoAuthorisationToken()
+
+    def action(self):
+        raise NotImplementedResponse()
+
+    def __call__(self,env):
+        self.env=env
+        if self.isSecure():
+            self.authenticate()
+        return self.action()
 
 
 
@@ -29,8 +66,13 @@ class WSGIApp:
 
 
     def actions(self, env):
-        if env.method() == HTTPMethod.GET:
+        method = env.method()
+        if method == HTTPMethod.GET:
             return self.GET(env)
+        elif method == HTTPMethod.POST:
+            return self.POST(env)
+        elif method == HTTPMethod.DELETE:
+            return self.DELETE(env)
         else:
             raise BadRequestResponse()
 
@@ -67,6 +109,15 @@ class WSGIApp:
                 return JSONResponse(info)
         else:
             raise NotFoundResponse()
+
+    def POST(self,env):
+        auth = env.auth_key()
+        raise NotImplementedResponse()
+
+    def DELETE(self,env):
+        auth = env.auth_key()
+        raise NotImplementedResponse()
+
 
 
 
